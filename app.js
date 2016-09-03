@@ -1,11 +1,6 @@
-var express = require('express');
+var server = require('./server');
 var config = require('./config');
-var app = express();
 
-app.get('/ping', (req, res)=>{
-	res.send("pong");
-});
-
-app.listen(config.port, ()=>{
-	console.log('Magic Happening on '+config.host+":"+config.port);
+server.listen(config.port, () => {
+    console.log('Magic happening on address : ' + config.host + ':' + config.port);
 });
