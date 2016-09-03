@@ -20,6 +20,18 @@ var compileToInt = function(query) {
     return query;
 }
 
+var convertRegex = function(query){
+	for(key in query){
+		if(typeof(query[key])=='string'){
+			query[key] = {
+				$regex : query[key],
+				$options : 'i'
+			}
+		}
+	}
+	return query;
+}
+
 module.exports = {
 /*
 	API URL = /api/list
@@ -89,7 +101,8 @@ module.exports = {
 */
 
     search: function(req, res) {
-        var query = compileToInt(req.query); // this function converts the string number to integer number
+        var query = convertRegex(compileToInt(req.query)); // this function converts the string number to integer number
+        
         if (Object.keys(query).length == 0) {
             res.send(output('no parameters sent'));
         } else
