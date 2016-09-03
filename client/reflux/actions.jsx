@@ -1,7 +1,8 @@
 var Reflux = require('reflux');
 
 var Actions = Reflux.createActions([
-	'search'
+	'search',
+	'getBattles'
 ]);
 
 module.exports = Actions;

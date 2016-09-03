@@ -3,13 +3,14 @@ var ObjectId = require('mongodb').ObjectId;
 var async = require('async');
 var config = require('../../config');
 
+// generalising the output format
 var output = (err, data) => {
     return {
         error: err || '',
         data: data || ''
     };
 }
-
+// change string number to interger number 
 var compileToInt = function(query) {
     for (key in query) {
         if (!isNaN(query[key])) {
@@ -20,11 +21,16 @@ var compileToInt = function(query) {
 }
 
 module.exports = {
+/*
+	API URL = /api/list
+	note: returns all the battles in JSON format with added parameter 'url' that will give front end the next path
 
+*/
     listPlaces: function(req, res) {
         MongoClient.connect(config.db.url, function(err, db) {
             if (!err) {
                 db.collection(config.db.collection).find({}).toArray((err, list) => {
+                	// adding url key to each json so that next url is present for frontend
                     list = list.map(function(d) {
                         d.url = '/api/list/' + d._id;
                         return d;
@@ -38,6 +44,12 @@ module.exports = {
         });
     },
 
+/*
+	API URL : /api/list/:id
+	example: /api/list/57caf23f6a05b3c9ca27733b
+	note: this is specific to get single battle info
+
+*/
     detailPlace: function(req, res) {
         var id = req.params.id || '';
         MongoClient.connect(config.db.url, function(err, db) {
@@ -51,7 +63,11 @@ module.exports = {
             }
         });
     },
-
+/*
+	API URL : /api/count
+	Query : /api/count?year=300
+	note: if parameters is passed it will give count according to the query else without paramters count of all battles will be returned
+*/
     countPlaces: function(req, res) {
         var query = compileToInt(req.query);
 
@@ -66,9 +82,14 @@ module.exports = {
             }
         });
     },
+/*
+	API URL : /api/search
+	Query : /api/search?year=300
+	note: any parameters can be passed which are present in the data , else it will respond with error .
+*/
 
     search: function(req, res) {
-        var query = compileToInt(req.query);
+        var query = compileToInt(req.query); // this function converts the string number to integer number
         if (Object.keys(query).length == 0) {
             res.send(output('no parameters sent'));
         } else
@@ -87,10 +108,16 @@ module.exports = {
             });
 
     },
+/*
+	node: this is the function to generate stats as shown in the example
+	API URL : /api/stats
 
+
+*/
     statistics: function(req, res) {
         MongoClient.connect(config.db.url, function(err, db) {
             if (!err) {
+            	// running tasks in parallel for faster result 
                 async.parallel({
                     "battle_type": function(cb) {
 

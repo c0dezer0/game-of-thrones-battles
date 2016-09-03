@@ -4,9 +4,16 @@ var Actions = require('./actions.jsx');
 
 var SearchStore = Reflux.createStore({
 	listenables : [Actions],
-	search: function(query){
-		
-		HTTP.get('/api/search')
+	search: function(url){
+
+		HTTP.get(url)
+		.then(function(json){
+			this.battles = json;
+			this.fireUpdate();
+		}.bind(this));
+	},
+	getBattles : function(){
+		HTTP.get('/api/list')
 		.then(function(json){
 			this.battles = json;
 			this.fireUpdate();
