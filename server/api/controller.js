@@ -8,6 +8,16 @@ var output = (err, data) => {
         data: data || ''
     };
 }
+
+var compileToInt = function(query) {
+    for (key in query) {
+        if (!isNaN(query[key])) {
+            query[key] = Number(query[key]);
+        }
+    }
+    return query;
+}
+
 module.exports = {
 
     listPlaces: function(req, res) {
@@ -42,12 +52,8 @@ module.exports = {
     },
 
     countPlaces: function(req, res) {
-        var query = req.query;
-        for (key in query) {
-            if (!isNaN(query[key])) {
-                query[key] = Number(query[key]);
-            }
-        }
+        var query = compileToInt(req.query);
+
         MongoClient.connect(config.db.url, function(err, db) {
             if (!err) {
                 db.collection(config.db.collection).count(query, (err, count) => {
@@ -57,7 +63,26 @@ module.exports = {
             } else {
                 res.send(output(err));
             }
-        })
+        });
+    },
+
+    search: function(req, res) {
+        var query = compileToInt(req.query);
+
+        MongoClient.connect(config.db.url, function(err, db) {
+            if (!err) {
+                db.collection(config.db.collection).find(query).toArray((err, data) => {
+                    if (data.length == 0) {
+                        err = 'No match found';
+                    }
+                    res.send(output(err, data));
+                    db.close();
+                });
+            } else {
+                res.send(output(err));
+            }
+        });
+
     }
 
 }

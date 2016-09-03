@@ -8,6 +8,8 @@ function initData(app) {
 
    app.get('/api/count', controller.countPlaces);
 
+   app.get('/api/search', controller.search);
+
 }
 
 module.exports = initData
