@@ -25,11 +25,16 @@ var List = React.createClass({
 	},
 	onChange: function (e, battles) {
 
-		this.setState({ battles: battles.data, isLoading: false, searchTxt: '' });
+		this.setState({ battles: battles.data, isLoading: false });
 	},
 	search: function (e) {
 		if (this.state.searchTxt) {
-			var url = '/api/search?' + this.state.option + '=' + this.state.searchTxt;
+			var url = '';
+			if (this.state.option == 'king') {
+				url = '/api/search?attacker_king=' + this.state.searchTxt + '&defender_king=' + this.state.searchTxt;
+			} else {
+				url = '/api/search?' + this.state.option + '=' + this.state.searchTxt;
+			}
 			Actions.search(url);
 			this.setState({ isLoading: true, battles: [] });
 		}

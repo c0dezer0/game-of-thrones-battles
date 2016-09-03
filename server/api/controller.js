@@ -21,6 +21,7 @@ var compileToInt = function(query) {
 }
 
 var convertRegex = function(query){
+	var arr =[];
 	for(key in query){
 		if(typeof(query[key])=='string'){
 			query[key] = {
@@ -28,8 +29,9 @@ var convertRegex = function(query){
 				$options : 'i'
 			}
 		}
+		arr.push({[key]: query[key]});
 	}
-	return query;
+	return arr;
 }
 
 module.exports = {
@@ -108,7 +110,8 @@ module.exports = {
         } else
             MongoClient.connect(config.db.url, function(err, db) {
                 if (!err) {
-                    db.collection(config.db.collection).find(query).toArray((err, data) => {
+                    db.collection(config.db.collection).find({$or:query}).toArray((err, data) => {
+                    	console.log(err);
                         if (data.length == 0) {
                             err = 'No match found';
                         }
