@@ -10,6 +10,7 @@ function initData(app) {
 
    app.get('/api/search', controller.search);
 
+   app.get('/api/stats', controller.statistics);
 }
 
 module.exports = initData

@@ -1,0 +1,1 @@
+console.error("SyntaxError: /Users/manishkumar/Documents/toppr-GoT/client/components/ListItem.jsx: Unexpected token (8:2) while parsing file: /Users/manishkumar/Documents/toppr-GoT/client/components/ListItem.jsx");
